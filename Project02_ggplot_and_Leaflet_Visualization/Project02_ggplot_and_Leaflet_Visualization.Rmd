@@ -1,0 +1,686 @@
+---
+title: "Spatial Analysis and Modeling of King County Housing Prices"
+author: "Kayla Dyer"
+date: "June 7th, 2026"
+output:
+  html_document: 
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    number_sections: yes
+    toc_collapsed: yes
+    code_folding: hide
+    code_download: yes
+    smooth_scroll: yes
+    theme: lumen
+  pdf_document: 
+    toc: yes
+    toc_depth: 4
+    fig_caption: yes
+    number_sections: yes
+    fig_width: 3
+    fig_height: 3
+  word_document: 
+    toc: yes
+    toc_depth: 4
+    fig_caption: yes
+    keep_md: yes
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{css, echo = FALSE}
+#TOC::before {
+  content: "Table of Contents";
+  font-weight: bold;
+  font-size: 1.2em;
+  display: block;
+  color: navy;
+  margin-bottom: 10px;
+}
+
+
+div#TOC li {     /* table of content  */
+    list-style:upper-roman;
+    background-image:none;
+    background-repeat:none;
+    background-position:0;
+}
+
+h1.title {    /* level 1 header of title  */
+  font-size: 22px;
+  font-weight: bold;
+  color: DarkRed;
+  text-align: center;
+  font-family: "Gill Sans", sans-serif;
+}
+
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  font-size: 15px;
+  font-weight: bold;
+  font-family: system-ui;
+  color: navy;
+  text-align: center;
+}
+
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Gill Sans", sans-serif;
+  color: DarkBlue;
+  text-align: center;
+}
+
+h1 { /* Header 1 - and the author and data headers use this too  */
+    font-size: 20px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: center;
+}
+
+h2 { /* Header 2 - and the author and data headers use this too  */
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: navy;
+    text-align: left;
+}
+
+h3 { /* Header 3 - and the author and data headers use this too  */
+    font-size: 16px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: navy;
+    text-align: left;
+}
+
+h4 { /* Header 4 - and the author and data headers use this too  */
+    font-size: 14px;
+  font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: left;
+}
+
+/* Add dots after numbered headers */
+.header-section-number::after {
+  content: ".";
+
+body { background-color:white; }
+
+.highlightme { background-color:yellow; }
+
+p { background-color:white; }
+
+}
+```
+```{r setup, include=FALSE}
+# Load required libraries
+library(tidyverse)  # For data manipulation and visualization
+library(ggplot2)    # For advanced plotting
+library(naniar)     # For missing data visualization
+library(skimr)      # For compact data summaries
+library(GGally)     # For parallel coordinate plots and scatterplot matrices
+library(plotly)     # For interactive visualizations
+library(DT)         # For interactive tables
+
+house_data <- read.csv("/Users/kayladyer/Library/CloudStorage/OneDrive-WestChesterUniversityofPA/STA 553/Data/house_data.csv")
+
+df <- house_data
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 10,
+  fig.height = 6,
+  fig.align = "center"
+)
+
+# Custom theme for consistent visual design
+theme_storytelling <- theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", margin = margin(b = 10)),
+    plot.subtitle = element_text(size = 12, color = "grey40"),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    legend.position = "bottom",
+    panel.grid.major = element_line(color = "grey90"),
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(20, 20, 20, 20)
+  )
+```
+
+# Spatial Analysis and Modeling of King County Housing Prices
+
+This project uses the King County Housing dataset, which contains information on residential home sales in King County, Washington. The dataset includes 21,613 observations and 21 variables describing housing characteristics such as sale price, bedrooms, bathrooms, square footage, condition, waterfront status, and geographic location.
+
+This dataset was selected because it provides an opportunity to explore factors that may influence housing prices. In addition to housing characteristics, the dataset includes latitude and longitude coordinates, making it possible to examine how location relates to home values.
+
+The main questions explored in this project are:
+
+1. How does square footage relate to housing price?
+2. Do waterfront homes sell for higher prices?
+3. How do housing prices vary across geographic locations?
+4. Which housing characteristics appear most associated with home value?
+
+## Introduction
+
+### King County Housing Dataset Overview
+
+How the data was collected: This project uses the King County Housing dataset, which contains 21,613 residential home sale records and 21 variables. Each observation represents a single home sale in King County, Washington. The dataset includes housing characteristics such as sale price, number of bedrooms and bathrooms, square footage, condition, grade, waterfront status, and geographic coordinates. The data appears to have been collected from residential property sales records and was selected for this project because it allows for the exploration of factors associated with housing prices and geographic housing patterns.
+
+
+**Data Dictionary**
+
+Population: The target population consists of residential properties sold in King County, Washington. The sampling frame includes all home sales contained in the dataset. Each observation corresponds to one residential property sale. The final dataset contains 21,613 housing records available for analysis.
+
+
+```{r}
+data_dictionary <- tribble(
+  ~Variable_Name,    ~Description,                                                        ~Variable_Type,
+  "[var1]",          "[Brief description of variable 1 — what it measures, units]",       "[Numeric/Categorical/Date/Text]",
+  "[var2]",          "[Brief description of variable 2 — what it measures, categories]",  "[Numeric/Categorical/Date/Text]",
+  "[var3]",          "[Brief description of variable 3 — what it measures]",              "[Numeric/Categorical/Date/Text]",
+  "[var4]",          "[Brief description of variable 4 — what it measures, categories]",  "[Numeric/Categorical/Date/Text]"
+  # Add more rows as needed
+)
+
+datatable(
+  data_dictionary,
+  caption = "Table 1: Variable definitions and types for the analysis dataset",
+  rownames = FALSE,
+  options = list(pageLength = 10, dom = 'tip')
+)
+```
+
+### Research Questions and Hypotheses
+
+The purpose of this dataset is to better understand factors that may be associated with housing prices in King County, Washington. The dataset contains information on home sales, property characteristics, and geographic location, making it useful for exploring how different housing features relate to sale price.
+
+**Business Question 1**: Is there a relationship between a home’s living area (square footage) and its sale price?
+
+**Business Question 2**: Do waterfront properties generally sell for higher prices than non-waterfront properties?
+
+**Business Question 3**: How do housing prices vary across different locations within King County?
+
+Hypotheses derived from domain knowledge:
+
+**H1**: Homes with larger living areas are expected to have higher sale prices.
+
+**H2**: Waterfront homes are expected to sell for more than comparable non-waterfront homes.
+
+**H3**: Housing prices are expected to vary by location, with some areas showing consistently higher home values than others.
+
+These questions and hypotheses will guide the visual exploration of the dataset and help identify patterns related to housing prices.
+
+# Part I: Exploratory Data Visualization
+
+
+**Narrative of the plan**: The exploratory visual analysis of the King County Housing dataset is designed to understand patterns in housing prices and property characteristics. The analysis will begin with data quality checks and missing value assessments. Next, univariate visualizations will be used to examine the distributions of important variables such as price, square footage, bedrooms, bathrooms, grade, and condition. Bivariate visualizations will then explore relationships between housing price and key property features, including living area, waterfront status, and geographic location.
+
+## Overall Data Inspection — Missing Values and Data Quality
+
+**Goal**:
+
+* Assess the completeness and overall quality of the King County Housing dataset before beginning the visual analysis.
+
+* Visualize missing data patterns using an aggregated heatmap or upset plot.
+
+* Examine the proportion of missing values for each variable.
+
+* Check for possible data entry issues, such as unrealistic sale prices, square footage values, bedroom or bathroom counts, or latitude and longitude coordinates.
+
+
+## Variable Inspections — Distribution Analysis
+
+**Goal**: Understand the distributions, variability, and potential outliers of key housing variables.
+
+* **Numeric variables**: Histograms with overlaid density curves, supplemented by boxplots to examine the distributions of sale price, living area (sqft_living), lot size (sqft_lot), bedrooms, bathrooms, and grade.
+
+* **Categorical variables**: Bar charts ordered by frequency to summarize variables such as waterfront status, condition, grade, and view rating.
+
+* **Date/time variables**: Time series plots may be used to examine temporal patterns in housing prices and transaction volume, if relevant to the analysis.
+
+
+## Relationships Between Variables
+
+**Goal**: Investigate the relationships between housing prices, property characteristics, and geographic location.
+
+* **Numerical vs. Numerical**: Scatterplots with local regression (LOESS) smoothers will be used to examine relationships between housing price and variables such as living area (sqft_living), lot size (sqft_lot), bedrooms, bathrooms, and grade. Correlation matrices may also be used to summarize relationships among numerical variables.
+
+* **Categorical vs. Categorical**: Grouped and stacked bar charts will be used to compare distributions across variables such as waterfront status, condition, and grade.
+
+* **Numerical vs. Categorical**: Side-by-side boxplots and violin plots will be used to compare housing prices across categories such as waterfront status, condition, and grade.
+
+* **Geographic Relationships**: Spatial scatterplots and interactive maps using latitude and longitude will be used to examine geographic patterns in housing prices across King County.
+
+
+## Exploratory Analysis of Housing Market Patterns
+
+
+The visualizations in this project will follow principles of effective visual design to ensure that patterns and relationships in the data are communicated clearly. Appropriate chart types will be selected based on the variable types and business questions being explored. Consistent color schemes, labels, titles, and scales will be used to improve readability and interpretation. Interactive visualizations created with ggplotly() will allow users to explore housing prices, property characteristics, and geographic patterns in greater detail.
+
+## Data Quality and Missing Value Assessment
+
+### Missing Data Pattern
+
+Before interpreting patterns in housing prices and property characteristics, it is important to evaluate the completeness of the dataset. Missing values can affect the accuracy of visualizations and lead to misleading conclusions if not properly understood. This visualization highlights the location and frequency of missing values across variables, allowing us to identify potential patterns of missingness and assess overall data quality before proceeding with the analysis.
+
+
+```{r}
+df <- house_data
+# Proportion missing by variable
+missing_summary <- df %>%
+  summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "pct_missing") %>%
+  arrange(desc(pct_missing))
+
+ggplot(missing_summary, aes(x = reorder(variable, pct_missing), y = pct_missing)) +
+  geom_col(fill = "steelblue", alpha = 0.8) +
+  geom_text(aes(label = paste0(round(pct_missing, 1), "%")), hjust = -0.1, size = 3.5) +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, max(missing_summary$pct_missing) * 1.2)) +
+  labs(
+    title = "Proportion of Missing Values by Variable",
+    subtitle = "Variables with high missingness rates may require imputation or exclusion",
+    x = NULL,
+    y = "Percentage Missing (%)"
+  ) +
+  theme_storytelling
+```
+
+
+The missing value assessment shows that all variables in the King County Housing dataset have 0% missing values. No systematic patterns of missingness were detected, indicating that the dataset is complete for the variables included in this analysis.
+
+Since no missing values are present:
+
+* No imputation procedures are required.
+
+* No observations need to be removed due to incomplete data.
+
+* The full sample of 21,613 home sales records can be retained for analysis.
+
+Because the dataset is complete, concerns about bias introduced by missing information are minimized, allowing subsequent visualizations and exploratory analyses to be conducted using all available observations.
+
+## Univariate Distribution Analysis
+
+### Distributions of Key Numeric Variables
+
+Understanding the distribution of key housing variables is important for identifying common property characteristics, unusual observations, and potential outliers that may influence housing prices. Histograms and density curves will be used to examine variables such as sale price, living area, lot size, bedrooms, bathrooms, and grade. These visualizations provide insight into the shape, spread, and skewness of the data and help determine whether transformations or additional investigation may be needed before exploring relationships between variables.
+
+
+```{r fig.align='center', fig.height=6, fig.width=7}
+# Reshape selected numeric housing variables to long format for faceted plotting
+df_numeric_long <- df %>%
+  select(price, sqft_living, sqft_lot, bedrooms, bathrooms, grade) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "value")
+
+# Calculate mean and median for each variable
+summary_stats <- df_numeric_long %>%
+  group_by(variable) %>%
+  summarise(
+    mean = mean(value, na.rm = TRUE),
+    median = median(value, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(df_numeric_long, aes(x = value)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 40, fill = "skyblue", alpha = 0.6, color = "white") +
+  geom_density(color = "darkblue", linewidth = 1) +
+  geom_vline(data = summary_stats, aes(xintercept = mean), linetype = "dashed", color = "red", linewidth = 1) +
+  geom_vline(data = summary_stats, aes(xintercept = median), linetype = "solid", color = "darkgreen", linewidth = 1) +
+  facet_wrap(~ variable, scales = "free", ncol = 2) +
+  labs(
+    title = "Distributions of Key Numeric Housing Variables",
+    subtitle = "Red dashed line = mean; green solid line = median",
+    x = NULL,
+    y = "Density"
+  ) +
+  theme_storytelling
+```
+
+The distributions of the key housing variables reveal several important patterns. Sale price, living area (sqft_living), and lot size (sqft_lot) are strongly right-skewed, indicating that while most homes fall within a typical range, a relatively small number of high-value properties and large lots create long upper tails. Bedrooms and bathrooms are concentrated around common residential values, while grade shows distinct peaks reflecting the discrete rating system used to evaluate construction and design quality.
+
+The differences between the mean and median lines for price, living area, and lot size further confirm the presence of positive skewness and potential outliers. These characteristics suggest that transformations such as the logarithm of price or square footage may be useful for certain statistical analyses. The observed variation also indicates that housing values are influenced by a wide range of property characteristics, supporting further investigation of relationships among price, size, quality, waterfront status, and location in subsequent analyses.
+
+
+### Distributions of Categorical Variables
+
+Categorical variables describe important housing characteristics that may be associated with home values. Examining the frequency of categories such as waterfront status, condition, grade, and view helps summarize the composition of the dataset and identify differences across property types. Bar charts will be used to compare the distribution of these variables.
+
+
+```{r fig.align='center', fig.height=7, fig.width=8}
+# Convert selected housing variables to categorical factors
+df_cat <- df %>%
+  mutate(
+    waterfront = factor(waterfront, labels = c("No Waterfront", "Waterfront")),
+    condition = factor(condition),
+    grade = factor(grade),
+    view = factor(view)
+  )
+
+# Reshape categorical variables to long format for bar charts
+df_cat_long <- df_cat %>%
+  select(waterfront, condition, grade, view) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "category")
+
+ggplot(df_cat_long, aes(y = fct_rev(fct_infreq(category)))) +
+  geom_bar(fill = "coral", alpha = 0.8, width = 0.7) +
+  geom_text(stat = "count", aes(label = after_stat(count)), hjust = -0.2, size = 3.5) +
+  facet_wrap(~ variable, scales = "free_y", ncol = 1) +
+  labs(
+    title = "Categorical Variable Frequency Counts",
+    subtitle = "Counts shown at bar ends for selected housing characteristics",
+    x = "Number of Observations",
+    y = NULL
+  ) +
+  theme_storytelling
+```
+
+The categorical housing variables show clear concentration within a few dominant categories. Most properties are classified as condition 3 or 4, indicating that the housing stock is generally in average to good condition. Property grades are similarly concentrated around grades 7 and 8, suggesting that most homes are of average to above-average construction quality.
+
+The dataset is highly imbalanced with respect to waterfront status and view ratings. Only 163 properties are waterfront homes, while the vast majority are non-waterfront properties. Likewise, most homes have a view rating of 0, with relatively few properties receiving higher view scores. These patterns suggest that waterfront access and desirable views represent uncommon housing characteristics that may contribute substantially to higher sale prices. These variables will therefore be important to examine in the subsequent relationship analyses.
+
+
+## Relationships Between Variables
+
+### Correlation and Trend Discovery
+
+Examining relationships among numeric housing variables helps identify the factors most strongly associated with sale price and property value. Scatterplots, correlation analyses, and trend lines will be used to evaluate relationships between price, living area, lot size, bedrooms, bathrooms, grade, and other housing characteristics. These visualizations help reveal whether relationships are linear or non-linear and provide insight into which property features may have the greatest influence on housing prices.
+
+```{r fig.align='center', fig.width=8, fig.height=6}
+# Select key numeric housing variables for relationship analysis
+df4 <- df %>%
+  select(price, sqft_living, sqft_lot, bedrooms, bathrooms, grade) %>%
+  sample_n(min(2000, nrow(.)))   # sample for clearer plotting and faster rendering
+
+ggpairs(
+  df4,
+  lower = list(continuous = wrap("smooth", method = "loess", se = TRUE, alpha = 0.3, color = "steelblue")),
+  diag = list(continuous = wrap("barDiag", fill = "skyblue", alpha = 0.6)),
+  upper = list(continuous = wrap("cor", size = 4, color = "darkred"))
+) +
+  labs(
+    title = "Numeric Housing Variable Relationships:\nCorrelation Matrix with LOESS Smoothers",
+    subtitle = "Lower panel: LOESS trends. Upper panel: Pearson correlation coefficients."
+  ) +
+  theme_storytelling
+```
+
+
+The correlation matrix shows that housing price is most strongly related to living area (sqft_living), grade, and bathrooms. Living area has the strongest association with price (r = 0.710), followed by grade (r = 0.672) and bathrooms (r = 0.528). In contrast, lot size shows only a weak relationship with price (r = 0.131), suggesting that interior characteristics contribute more to home value than land area in this dataset.
+
+The LOESS smoothers indicate that several relationships are not strictly linear, particularly between price and living area. Overall, the results suggest that living area, grade, and bathrooms are likely to be important predictors of housing prices and should be examined further in subsequent analyses.
+
+
+### Comparing Distributions Across Groups
+
+Examining housing prices across different property categories helps identify whether certain characteristics are associated with higher or lower home values. Violin plots provide a detailed view of the distribution of sale prices within each group by displaying the density, spread, and central tendency of the data. This approach allows for a more complete comparison than summary statistics alone and can reveal differences that may not be apparent from mean values.
+
+
+```{r fig.align='center', fig.width=8, fig.height=6}
+ggplot(df, aes(x = factor(waterfront, labels = c("No Waterfront", "Waterfront")),
+               y = price,
+               fill = factor(waterfront, labels = c("No Waterfront", "Waterfront")))) +
+  geom_violin(trim = FALSE, alpha = 0.7) +
+  geom_boxplot(width = 0.12, fill = "white", alpha = 0.8, outlier.alpha = 0.2) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  labs(
+    title = "Distribution of Housing Prices by Waterfront Status",
+    subtitle = "Violin plots compare the full price distribution for waterfront and non-waterfront homes",
+    x = "Waterfront Status",
+    y = "Sale Price"
+  ) +
+  theme_storytelling +
+  theme(legend.position = "none")
+```
+
+The violin plot shows a clear difference in housing prices between waterfront and non-waterfront properties. Waterfront homes have a substantially higher median sale price and a much wider distribution, indicating greater variability in home values. In contrast, non-waterfront properties are concentrated at lower price levels, although several high-priced outliers are still present. The greater spread among waterfront homes suggests that additional property characteristics, such as living area, grade, and view quality, may contribute to price differences within this group. Overall, the results indicate that waterfront status is an important factor associated with housing value and should be included in subsequent analyses of housing prices.
+
+### Contingency and Association
+
+Understanding how housing characteristics occur together can provide insight into property quality and value. Examining the relationship between categorical variables such as waterfront status and view rating helps identify patterns that may influence housing prices. A normalized grouped bar chart allows us to compare proportions across categories and assess whether the distribution of one characteristic differs meaningfully across levels of another.
+
+```{r fig.align='center', fig.width=8, fig.height=6}
+# Best visualization for two categorical housing variables
+ggplot(df, aes(x = factor(condition), fill = factor(waterfront, labels = c("No Waterfront", "Waterfront")))) +
+  geom_bar(position = "fill", alpha = 0.85) +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_viridis_d(option = "D", name = "Waterfront Status") +
+  labs(
+    title = "Waterfront Status Across Housing Conditions",
+    subtitle = "Shows the proportion of waterfront and non-waterfront homes within each condition level",
+    x = "Housing Condition",
+    y = "Proportion of Total"
+  ) +
+  theme_storytelling
+```
+
+The distribution of waterfront homes is highly imbalanced across all housing condition levels. Non-waterfront properties account for the vast majority of observations, while waterfront homes represent only a very small proportion within each condition category. Although condition levels differ slightly in their waterfront proportions, no substantial variation is evident.
+
+This pattern suggests that waterfront status is a relatively rare characteristic in the housing market. Because waterfront properties are uncommon yet often associated with higher sale prices, waterfront status may serve as an important predictor in subsequent analyses. The strong class imbalance should also be considered when comparing housing characteristics or developing predictive models, as results may be driven primarily by non-waterfront homes.
+
+## Interactive Geographic Visualization
+
+Explore the spatial distribution of housing prices using the latitude and longitude coordinates provided in the dataset.
+
+```{r fig.align='center'}
+p_interactive <- ggplot(
+  df,
+  aes(
+    x = long,
+    y = lat,
+    color = price,
+    text = paste(
+      "Price:", scales::dollar(price),
+      "<br>Bedrooms:", bedrooms,
+      "<br>Bathrooms:", bathrooms
+    )
+  )
+) +
+  geom_point(alpha = 0.6) +
+  scale_color_viridis_c(labels = scales::dollar_format()) +
+  labs(
+    title = "Interactive Geographic Distribution of Housing Prices",
+    x = "Longitude",
+    y = "Latitude",
+    color = "Sale Price"
+  ) +
+  theme_storytelling
+
+ggplotly(p_interactive, tooltip = "text")
+```
+
+The geographic visualization shows that most homes cluster within a relatively narrow range of latitudes and longitudes, reflecting the concentration of housing throughout King County. Higher-priced homes (lighter colors) appear in several localized pockets, while lower-priced homes are distributed more broadly across the region. This pattern suggests that location plays an important role in housing value and that geographic variables such as latitude and longitude may be useful predictors in future analyses. Interactive exploration with ggplotly also makes it easier to identify specific high-value areas and investigate local pricing patterns.
+
+## Geographic Distribution of Housing Prices
+
+Geographic location is an important factor in housing markets. Using latitude and longitude coordinates, this visualization examines the spatial distribution of home prices and highlights areas where higher- and lower-priced properties are concentrated.
+
+```{r}
+p_geo <- ggplot(df,
+                aes(x = long,
+                    y = lat,
+                    color = price)) +
+  geom_point(alpha = 0.6) +
+  scale_color_viridis_c(labels = scales::dollar_format()) +
+  labs(
+    title = "Geographic Distribution of Housing Prices",
+    subtitle = "Housing prices across latitude and longitude coordinates",
+    x = "Longitude",
+    y = "Latitude",
+    color = "Sale Price"
+  ) +
+  theme_storytelling
+
+ggplotly(p_geo)
+```
+
+The geographic distribution indicates that housing prices vary across locations rather than being evenly distributed throughout the county. While most homes are concentrated within several geographic clusters, higher-priced properties appear in a smaller number of localized areas, suggesting that location is an important factor influencing home values. The spatial pattern observed in the visualization supports including geographic variables such as latitude and longitude in subsequent analyses, as they may help explain variation in housing prices.
+
+
+# Housing Market Insights and Recommendations
+
+Housing prices are influenced by a combination of property characteristics, location, and neighborhood features. The visualizations in this report were used to explore data quality, variable distributions, and relationships among key housing variables. Together, these findings provide a foundation for understanding factors associated with home values and identifying patterns that may support future modeling and decision-making.
+
+## Key Findings for Housing Market Decision-Making
+
+The visual analysis identified several housing characteristics that appear to be closely associated with property values and market trends. These findings can help support decisions related to property valuation, investment opportunities, and market segmentation.
+
+**Decision on Property Valuation**: The correlation analysis showed strong positive relationships between sale price, living area, grade, and number of bathrooms. Recommendation: Place greater emphasis on these characteristics when estimating property values or comparing similar homes, as they appear to be among the strongest indicators of housing prices in this dataset.
+
+**Decision on Waterfront Properties**: The distribution analysis revealed that waterfront homes generally sell for substantially higher prices than non-waterfront properties.
+
+**Decision on Location**: The geographic visualization showed that housing prices vary across different areas of the county. Recommendation: Consider location alongside property characteristics when evaluating home values, as geographic position appears to be associated with pricing differences.
+
+**Decision on Market Segmentation**: The categorical analysis showed that most homes are concentrated within a few condition and grade categories, while higher-grade properties are less common. Recommendation: Segment properties by condition and grade to better understand pricing differences across the market and identify groups that may warrant separate analysis.
+
+
+## Implications for Future Housing Price Modeling
+
+The visual analysis provides a strong foundation for future statistical modeling and housing market research.
+
+**Feature Engineering**: The distributions of price, living area, and lot size showed noticeable right skewness. Applying transformations such as the logarithm of price or square footage may improve model performance and interpretability.
+
+**Model Selection**: The observed relationships between price and housing characteristics suggest that both linear and tree-based models could be useful. Tree-based methods may be particularly effective for capturing non-linear relationships between housing features and sale price.
+
+**Handling Missing Data**: The missing value assessment indicated that the dataset contains no missing observations. As a result, no imputation procedures are required, and the full sample can be retained for analysis.
+
+**Hypothesis Validation**: The visualizations suggest that living area, grade, bathrooms, and waterfront status are important factors associated with housing prices. Future analyses can formally evaluate these relationships using regression models and statistical tests to quantify their effects.
+
+## Opportunities for Interactive Monitoring and Reporting
+
+If these analyses were incorporated into a dashboard, the visualizations could be organized into three sections to support ongoing monitoring of housing market conditions.
+
+**Tab 1**: “Data Quality Monitor” — Display the missing value assessment and basic dataset statistics to ensure data completeness and identify any potential quality issues before analysis.
+
+**Tab 2**: “Housing Market Overview” — Include interactive versions of the geographic map, distribution plots, and correlation matrix, allowing users to explore housing prices across locations and property characteristics.
+
+**Tab 3**: “Property Characteristics” — Present interactive visualizations of waterfront status, housing condition, grade, and price distributions to help users compare property segments and identify factors associated with higher home values.
+
+The dashboard could be updated regularly as new housing data become available, providing an accessible way to monitor market trends and explore changes in property characteristics over time.
+
+This concludes the housing data visualization project. The analyses highlighted several factors associated with housing prices, including living area, grade, bathrooms, and waterfront status. These results provide a useful foundation for future modeling and housing market research.
+
+# Part II: Geospatial Exploration and Predictive Modeling
+
+## Distribution and Quality Assessment of Spatial Variables
+
+This section examines the spatial variables in the housing dataset and evaluates their suitability for geospatial analysis. Longitude and latitude describe the location of each property and provide the basis for exploring geographic patterns in housing prices.
+
+```{r}
+# Missing values in spatial variables
+colSums(is.na(df[, c("lat", "long")]))
+
+# Summary statistics
+summary(df[, c("lat", "long")])
+```
+
+```{r}
+ggplot(df, aes(x = long)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of Longitude",
+    x = "Longitude",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+ggplot(df, aes(x = lat)) +
+  geom_histogram(bins = 30, fill = "darkgreen", color = "white") +
+  labs(
+    title = "Distribution of Latitude",
+    x = "Latitude",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+The longitude and latitude variables contain no missing values, indicating complete geographic information for all housing observations. The distributions show that properties are concentrated within specific areas of King County rather than being evenly dispersed. These spatial patterns suggest that location may play an important role in explaining variation in housing prices and justify further geospatial analysis.
+
+## Geographic Variation in Housing Prices
+
+This section examines the relationship between geographic location and housing prices. By plotting properties according to their longitude and latitude coordinates and coloring points by sale price, we can evaluate whether housing values vary across different areas of King County and identify potential spatial patterns.
+
+```{r}
+p_interactive <- ggplot(
+  df,
+  aes(
+    x = long,
+    y = lat,
+    color = price,
+    text = paste(
+      "Price:", scales::dollar(price),
+      "<br>Bedrooms:", bedrooms,
+      "<br>Bathrooms:", bathrooms
+    )
+  )
+) +
+  geom_point(alpha = 0.6) +
+  scale_color_viridis_c(labels = scales::dollar_format()) +
+  labs(
+    title = "Interactive Geographic Distribution of Housing Prices",
+    x = "Longitude",
+    y = "Latitude",
+    color = "Sale Price"
+  ) +
+  theme_storytelling
+
+ggplotly(p_interactive, tooltip = "text")
+```
+
+
+Housing prices are not evenly distributed across geographic space. Higher-priced homes appear clustered within specific areas, while lower-priced homes are more broadly dispersed throughout the county. This pattern suggests that location plays an important role in determining housing value and that spatial variables may provide useful predictive information for future regression models. The observed clustering also indicates that housing prices may exhibit spatial dependence, where nearby properties tend to have similar values.
+
+## Spatial Clustering and Feature Engineering Opportunities
+
+The geographic visualization revealed that housing prices are clustered in specific areas rather than randomly distributed throughout King County. This suggests that location contains information beyond traditional housing characteristics such as bedrooms, bathrooms, and square footage. As a result, spatial variables may be useful for creating new features that improve predictive modeling performance.
+
+The observed geographic clustering of housing prices indicates that spatial information may improve future analyses. Variables such as neighborhood groupings, distance to high-value areas, or regional location indicators could be created from latitude and longitude coordinates and incorporated into predictive models. These spatially derived features may capture location effects that are not fully explained by existing housing characteristics, potentially improving model accuracy and interpretation.
+
+## Construction of the Analytic Dataset
+
+Before conducting regression analysis, an analytic dataset must be prepared by selecting a meaningful response variable and relevant predictor variables. Based on the exploratory analysis, sale price is chosen as the response variable because it represents the primary outcome of interest in the housing market. Housing characteristics and geographic variables will be retained as predictors.
+
+```{r}
+analytic_df <- df %>%
+  select(
+    price,
+    sqft_living,
+    bedrooms,
+    bathrooms,
+    grade,
+    condition,
+    waterfront,
+    lat,
+    long
+  )
+
+summary(analytic_df)
+```
+
+The analytic dataset contains housing sale price as the response variable and includes several housing and geographic characteristics as potential predictors. The average sale price is approximately $540,088, with prices ranging from $75,000 to $7,700,000, indicating substantial variation in housing values across King County. Properties have an average living area of 2,080 square feet, while the median home contains 3 bedrooms and 2.25 bathrooms. Housing quality measures also vary, with grade values ranging from 1 to 13 and condition ratings ranging from 1 to 5. Geographic variables show that properties are distributed throughout King County, with latitude values ranging from 47.16 to 47.78 and longitude values ranging from -122.50 to -121.30. These variables were selected based on findings from the exploratory analysis and provide an appropriate foundation for subsequent regression modeling of housing prices.
+
+## Factors Influencing Housing Sale Prices
+
+Housing sale price was selected as the response variable because it is the most practically meaningful measure of housing market value. This analysis uses a multiple linear regression model to examine how housing characteristics and geographic location influence sale price. Predictor variables include living area, bedrooms, bathrooms, grade, condition, waterfront status, latitude, and longitude. The goal is to identify which factors are most strongly associated with housing prices in King County.
+
+```{r}
+model_price <- lm(
+  price ~ sqft_living + bedrooms + bathrooms +
+    grade + condition + waterfront + lat + long,
+  data = analytic_df
+)
+
+summary(model_price)
+```
+
+The multiple linear regression model was used to evaluate factors influencing housing sale prices in King County. The model explains approximately 66% of the variation in housing prices (Adjusted R² = 0.6607), indicating a strong overall fit. Living area (sqft_living), grade, condition, waterfront status, latitude, and longitude were all statistically significant predictors of housing prices (p < 0.001). Waterfront properties were associated with substantially higher sale prices, while higher housing grades and larger living areas also contributed positively to property values.
+
+The geographic variables latitude and longitude were highly significant, confirming that location plays an important role in determining housing prices. This finding supports the earlier geospatial analyses and demonstrates that spatial information provides valuable predictive power beyond traditional housing characteristics. Bedrooms showed a statistically significant negative coefficient after controlling for other housing characteristics, while bathrooms were not statistically significant at the 5% level. Overall, the results suggest that both property features and geographic location are important determinants of housing prices and should be included in predictive housing market models.
+

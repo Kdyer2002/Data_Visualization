@@ -1,0 +1,504 @@
+---
+title: "Factors Influencing Customer Churn"
+author: "Kayla Dyer"
+date: "June 14th, 2026"
+output:
+  html_document: 
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    number_sections: yes
+    toc_collapsed: ye
+    code_folding: hide
+    code_download: yes
+    smooth_scroll: yes
+    theme: lumen
+  pdf_document: 
+    toc: yes
+    toc_depth: 4
+    fig_caption: yes
+    number_sections: yes
+    fig_width: 3
+    fig_height: 3
+  word_document: 
+    toc: yes
+    toc_depth: 4
+    fig_caption: yes
+    keep_md: yes
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{css, echo = FALSE}
+#TOC::before {
+  content: "Table of Contents";
+  font-weight: bold;
+  font-size: 1.2em;
+  display: block;
+  color: navy;
+  margin-bottom: 10px;
+}
+
+
+div#TOC li {     /* table of content  */
+    list-style:upper-roman;
+    background-image:none;
+    background-repeat:none;
+    background-position:0;
+}
+
+h1.title {    /* level 1 header of title  */
+  font-size: 22px;
+  font-weight: bold;
+  color: DarkRed;
+  text-align: center;
+  font-family: "Gill Sans", sans-serif;
+}
+
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  font-size: 15px;
+  font-weight: bold;
+  font-family: system-ui;
+  color: navy;
+  text-align: center;
+}
+
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Gill Sans", sans-serif;
+  color: DarkBlue;
+  text-align: center;
+}
+
+h1 { /* Header 1 - and the author and data headers use this too  */
+    font-size: 20px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: center;
+}
+
+h2 { /* Header 2 - and the author and data headers use this too  */
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: navy;
+    text-align: left;
+}
+
+h3 { /* Header 3 - and the author and data headers use this too  */
+    font-size: 16px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: navy;
+    text-align: left;
+}
+
+h4 { /* Header 4 - and the author and data headers use this too  */
+    font-size: 14px;
+  font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: left;
+}
+
+/* Add dots after numbered headers */
+.header-section-number::after {
+  content: ".";
+
+body { background-color:white; }
+
+.highlightme { background-color:yellow; }
+
+p { background-color:white; }
+
+}
+```
+```{r setup, include=FALSE}
+# Load required libraries
+library(tidyverse)  # For data manipulation and visualization
+library(ggplot2)    # For advanced plotting
+library(naniar)     # For missing data visualization
+library(skimr)      # For compact data summaries
+library(GGally)     # For parallel coordinate plots and scatterplot matrices
+library(plotly)     # For interactive visualizations
+library(DT)         # For interactive tables
+
+churn_data <- read.csv(
+  "/Users/kayladyer/Library/CloudStorage/OneDrive-WestChesterUniversityofPA/STA 553/Data/Customer-Chrn-dataset.txt",
+  header = TRUE,
+  stringsAsFactors = FALSE
+)
+
+df <- churn_data
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 10,
+  fig.height = 6,
+  fig.align = "center"
+)
+
+# Custom theme for consistent visual design
+theme_storytelling <- theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", margin = margin(b = 10)),
+    plot.subtitle = element_text(size = 12, color = "grey40"),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    legend.position = "bottom",
+    panel.grid.major = element_line(color = "grey90"),
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(20, 20, 20, 20)
+  )
+```
+
+# Introduction
+
+## Customer Churn Dataset Overview
+
+This project uses a customer churn dataset containing 1,000 customer records and 14 variables describing customer demographics, service characteristics, billing information, and churn status. The response variable, Churn, indicates whether a customer remained with the company or discontinued service.
+
+The dataset was selected because customer retention is an important business problem. Understanding which customer characteristics are associated with churn may help organizations identify at-risk customers and develop targeted retention strategies.
+
+## Research Questions
+
+1. Is customer churn associated with agreement period?
+
+Understanding whether contract length influences churn may help companies develop strategies that encourage long-term customer retention.
+
+2. Do customers with higher monthly charges have a greater likelihood of churning?
+
+Examining the relationship between monthly charges and churn may provide insight into whether pricing influences customer retention.
+
+3. Is technical support associated with customer churn?
+
+Understanding the role of technical support may help identify opportunities to improve customer satisfaction and reduce customer loss.
+
+4. Which customer characteristics appear most strongly associated with churn?
+
+Identifying important predictors may improve the development of a logistic regression model for predicting customer churn.
+
+## Background Story and Data Generation Process
+
+The dataset was obtained from the STA 553 course data repository and is based on customer data from a telecommunications company. According to the available documentation, the dataset was developed for studying customer retention and customer churn behavior.
+
+The original documentation does not provide details regarding the specific company, collection dates, or sampling methodology. However, the variables suggest that the data were derived from customer account and service records. The dataset was selected because it contains both categorical and numerical variables and includes a binary response variable suitable for logistic regression analysis.
+
+**Data Dictionary**
+
+Population: The target population consists of customers of a telecommunications company. The sampling frame includes all customer records contained in the dataset. Each observation corresponds to one customer and includes demographic information, service characteristics, billing information, and churn status. The final dataset contains 1,000 customer records available for analysis.
+
+```{r}
+data_dictionary <- tribble(
+  ~Variable_Name,      ~Description,                                            ~Variable_Type,
+  "Sex",               "Customer gender",                                       "Categorical",
+  "Marital_Status",    "Customer marital status",                               "Categorical",
+  "Term",              "Length of customer relationship (months)",              "Numeric",
+  "Phone_service",     "Whether customer has phone service",                    "Categorical",
+  "International_plan","Whether customer has an international calling plan",    "Categorical",
+  "Voice_mail_plan",   "Whether customer has a voice mail plan",                "Categorical",
+  "Multiple_line",     "Whether customer has multiple phone lines",             "Categorical",
+  "Internet_service",  "Type of internet service",                              "Categorical",
+  "Technical_support", "Whether customer receives technical support",           "Categorical",
+  "Streaming_Videos",  "Whether customer subscribes to video streaming",        "Categorical",
+  "Agreement_period",  "Customer contract type",                                "Categorical",
+  "Monthly_Charges",   "Monthly service charges",                               "Numeric",
+  "Total_Charges",     "Total charges accumulated by the customer",             "Numeric",
+  "Churn",             "Customer churn status (Yes/No)",                        "Categorical"
+)
+
+datatable(
+  data_dictionary,
+  caption = "Table 1: Data Dictionary",
+  rownames = FALSE,
+  options = list(pageLength = 14, dom = 'tip')
+)
+```
+
+## Study Hypotheses
+
+The purpose of this dataset is to better understand factors that may be associated with customer churn in a telecommunications company. The dataset contains information on customer demographics, service subscriptions, contract agreements, and billing characteristics, making it useful for exploring factors that may influence whether a customer remains with the company or discontinues service.
+
+Hypotheses derived from domain knowledge:
+
+**H1**: Customers with month-to-month agreements are expected to have higher churn rates than customers with longer-term agreements.
+
+**H2**: Customers with higher monthly charges are expected to be more likely to churn.
+
+**H3**: Customers without technical support are expected to have higher churn rates than customers who receive technical support.
+
+These questions and hypotheses will guide the visual exploration of the dataset and help identify factors associated with customer churn.
+
+# Visual Exploratory Data Analysis (EDA) Plan
+
+The exploratory visual analysis of the customer churn dataset is designed to understand patterns in customer retention and identify factors associated with churn. The analysis will begin with data quality checks and missing value assessments. Next, univariate visualizations will be used to examine the distributions of key variables such as agreement period, monthly charges, total charges, and churn status. Bivariate visualizations will then explore relationships between churn and customer characteristics including contract type, technical support, internet service, and billing variables. The findings from the EDA will be used to identify potential predictors for the logistic regression model and support interpretation of the final results.
+
+## Data Quality and Missing Value Assessment
+
+```{r}
+skim(df)
+colSums(is.na(df))
+vis_miss(df)
+```
+
+The dataset was inspected for missing values and potential data quality issues prior to conducting exploratory analysis. Summary statistics generated using skim() indicated that all 1,000 observations were complete and that no variables contained missing values. This finding was confirmed using both colSums(is.na(df)) and the missing data visualization produced by vis_miss().
+
+In addition to assessing missingness, the summary statistics were reviewed for potential inconsistencies and implausible values. No apparent data quality concerns were identified among the numerical variables, including Term, Monthly_Charges, and Total_Charges. Because the dataset contained no missing values and no obvious data entry issues were detected during the initial inspection, no records were removed and no imputation procedures were required. The dataset was therefore considered suitable for exploratory analysis and logistic regression modeling.
+
+
+## Distribution of Key Customer Variables
+
+This section examines the individual distributions of selected variables in the customer churn dataset. The numeric variables are reviewed to understand their spread, shape, and possible outliers. The categorical variables are reviewed to understand the frequency of major customer groups before examining their relationships with churn.
+
+The numeric variables explored in this section include `Term`, `Monthly_Charges`, and `Total_Charges`. The categorical variables explored include `Churn`, `Agreement_period`, and `Technical_support`. These variables were selected because they are directly related to the research questions and the logistic regression model.
+
+### Customer Retention and Churn Patterns
+
+```{r}
+ggplot(df, aes(x = Churn)) +
+  geom_bar(fill = "steelblue") +
+  geom_text(
+    stat = "count",
+    aes(label = after_stat(count)),
+    vjust = -0.3
+  ) +
+  labs(
+    title = "Distribution of Customer Churn",
+    x = "Churn Status",
+    y = "Number of Customers"
+  ) +
+  theme_storytelling
+```
+
+Of the 1,000 customers in the dataset, the majority remained with the company while a smaller group experienced churn. Although non-churn customers represent the larger portion of the sample, the number of churned customers is substantial enough to support further investigation into factors associated with customer attrition.
+
+### Distribution of Agreement Period
+
+```{r}
+ggplot(df, aes(x = Agreement_period)) +
+  geom_bar(fill = "steelblue") +
+  geom_text(
+    stat = "count",
+    aes(label = after_stat(count)),
+    vjust = -0.3,
+    size = 5
+  ) +
+  labs(
+    title = "Distribution of Agreement Period",
+    x = "Agreement Period",
+    y = "Number of Customers"
+  ) +
+  theme_storytelling
+```
+
+The most common agreement period in the dataset is the monthly contract, representing 539 customers. One-year contracts account for 208 customers, while two-year contracts account for 253 customers. The large number of customers on monthly contracts suggests that contract length may play an important role in customer retention and should be investigated further in relation to churn.
+
+### Distribution of Monthly Charges
+
+```{r}
+ggplot(df, aes(x = Monthly_Charges)) +
+  geom_histogram(
+    bins = 30,
+    fill = "steelblue",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution of Monthly Charges",
+    x = "Monthly Charges",
+    y = "Number of Customers"
+  ) +
+  theme_storytelling
+```
+
+Monthly charges range from approximately $20 to $120 per month. The distribution appears to be bimodal, suggesting that customers may fall into different service or pricing groups. No extreme outliers are evident, indicating that monthly charges are generally distributed within a reasonable range for further analysis.
+
+### Distribution of Customer Tenure
+
+```{r}
+ggplot(df, aes(x = Term)) +
+  geom_histogram(
+    bins = 30,
+    fill = "steelblue",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution of Customer Tenure",
+    x = "Term (Months)",
+    y = "Number of Customers"
+  ) +
+  theme_storytelling
+```
+
+Customer tenure ranges from approximately 1 to 72 months. The distribution is spread across the full range of observed values, with concentrations among both newer and long-term customers. This pattern suggests that the dataset contains a mix of recently acquired and established customers, making tenure a potentially important predictor of customer churn.
+
+### Distribution of Technical Support
+
+```{r}
+ggplot(df, aes(x = Technical_support)) +
+  geom_bar(fill = "steelblue") +
+  geom_text(
+    stat = "count",
+    aes(label = after_stat(count)),
+    vjust = -0.3,
+    size = 5
+  ) +
+  labs(
+    title = "Distribution of Technical Support",
+    x = "Technical Support",
+    y = "Number of Customers"
+  ) +
+  theme_storytelling
+```
+
+The majority of customers in the dataset receive technical support services, with 629 customers reporting technical support and 371 customers reporting no technical support. Because technical support may influence customer satisfaction and retention, this variable will be explored further in relation to customer churn.
+
+## Factors Associated with Customer Churn
+
+### Agreement Period and Customer Churn
+
+```{r}
+p <- ggplot(df,
+            aes(x = Agreement_period,
+                fill = Churn)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "Customer Churn by Agreement Period",
+    x = "Agreement Period",
+    y = "Proportion of Customers"
+  ) +
+  theme_storytelling
+
+ggplotly(p)
+```
+
+Customers with month-to-month agreements had the highest churn proportion, with approximately 42.5% of monthly contract customers experiencing churn. In comparison, churn was much lower for customers with one-year contracts at about 8.7% and two-year contracts at about 4.7%. This pattern suggests that agreement period may be an important predictor of customer retention, with longer-term agreements associated with lower churn.
+
+### Monthly Charges and Customer Churn
+
+```{r}
+p <- ggplot(df,
+            aes(x = Churn,
+                y = Monthly_Charges,
+                fill = Churn)) +
+  geom_boxplot() +
+  labs(
+    title = "Monthly Charges by Customer Churn Status",
+    x = "Churn Status",
+    y = "Monthly Charges"
+  ) +
+  theme_storytelling
+
+ggplotly(p)
+```
+
+Customers who churned generally had higher monthly charges than customers who remained with the company. The median monthly charge was approximately $70 for customers who did not churn, compared to approximately $81 for customers who churned. Although there is overlap in the distributions, the higher median monthly charge among churned customers suggests that monthly charges may be associated with an increased likelihood of customer churn.
+
+### Technical Support and Customer Churn
+
+```{r}
+p <- ggplot(df,
+            aes(x = Technical_support,
+                fill = Churn)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "Customer Churn by Technical Support Status",
+    x = "Technical Support",
+    y = "Proportion of Customers"
+  ) +
+  theme_storytelling
+
+ggplotly(p)
+```
+
+Customers without technical support experienced substantially higher churn rates than customers who received technical support. Approximately 42% of customers without technical support churned, compared to about 16% of customers with technical support. Customers with no internet service exhibited the lowest churn rate, at approximately 5%. These results suggest that access to technical support may be associated with improved customer retention and could be an important predictor of churn.
+
+### Customer Tenure and Churn
+
+```{r}
+p <- ggplot(df,
+            aes(x = Churn,
+                y = Term,
+                fill = Churn)) +
+  geom_boxplot() +
+  labs(
+    title = "Customer Tenure by Churn Status",
+    x = "Churn Status",
+    y = "Customer Tenure (Months)"
+  ) +
+  theme_storytelling
+
+ggplotly(p)
+```
+
+Customers who churn tend to have substantially shorter tenures than customers who remain with the company. The median tenure for customers who did not churn is approximately 35 months, compared to only 10 months for customers who churned. Additionally, 75% of churned customers have tenures below approximately 35 months, while the upper 50% of retained customers have tenures extending well beyond that range. These results suggest that customer tenure is a strong predictor of retention, with newer customers being considerably more likely to churn than long-term customers.
+
+# Visualization Strategy
+
+## Design Choices
+
+Several visualization techniques were selected to clearly communicate patterns in the customer churn dataset. Bar charts were used for categorical variables such as churn status, agreement period, and technical support because they allow for direct comparison of group frequencies. Histograms were used for numerical variables such as monthly charges and customer tenure to show the distribution, spread, and overall shape of the data.
+
+To examine relationships with churn, proportional stacked bar charts and boxplots were used. Proportional bar charts were selected for categorical predictors because they make it easier to compare churn rates across customer groups. Boxplots were used for numerical predictors because they summarize the median, spread, and range of values for customers who churned compared to those who did not.
+
+A consistent theme, clear axis labels, descriptive titles, and limited visual clutter were used throughout the report to improve readability. The visualizations were designed to highlight the main patterns in the data while keeping the focus on customer churn.
+
+## Interactive Visualization Features
+
+Interactive visualizations were created using the Plotly package. These graphics allow the reader to hover over the plots to view exact values, proportions, medians, quartiles, and other summary information. This is especially useful for the proportional bar charts and boxplots because the reader can explore the differences between churn groups without adding too many labels directly to the graphs.
+
+The interactive features support the exploratory purpose of the project by allowing users to examine the visual patterns more closely. They also help connect the visual findings to the research questions about agreement period, monthly charges, technical support, and customer tenure.
+
+### Summary of Exploratory Findings
+
+The exploratory analysis identified several variables that appear to be strongly associated with customer churn. Customers with month-to-month agreements experienced substantially higher churn rates than customers with one-year or two-year contracts. Higher monthly charges were also associated with greater churn, while customers receiving technical support demonstrated lower churn rates than those without support. Customer tenure showed one of the strongest relationships with churn, as customers who remained with the company generally had much longer tenures than customers who discontinued service.
+
+Overall, the visual evidence supports the proposed hypotheses and suggests that agreement period, monthly charges, technical support, and customer tenure may be important predictors to include in the logistic regression model developed in the next phase of the analysis.
+
+# Logistic Regression Modeling
+
+## Logistic Regression Results
+
+The exploratory data analysis identified several variables that appeared to be associated with customer churn. Based on these findings, a logistic regression model was developed to estimate the probability that a customer would discontinue service. Logistic regression was selected because the response variable, Churn, is binary and can take only two outcomes: Yes or No.
+
+The initial model included agreement period, monthly charges, technical support status, and customer tenure (Term), as these variables demonstrated the strongest relationships with churn during exploratory analysis.
+
+```{r}
+df$Churn <- factor(df$Churn)
+
+model1 <- glm(
+  Churn ~ Agreement_period +
+    Monthly_Charges +
+    Technical_support +
+    Term,
+  data = df,
+  family = binomial
+)
+
+summary(model1)
+```
+
+The logistic regression model was used to evaluate the relationship between customer churn and the variables identified during exploratory analysis. Agreement period, monthly charges, technical support status, and customer tenure were all statistically significant predictors of churn (p < 0.05), indicating that each variable contributed meaningful information for predicting customer churn.
+
+Customers with one-year and two-year agreements were significantly less likely to churn than customers with month-to-month agreements. Higher monthly charges were associated with an increased likelihood of churn, while customers receiving technical support were less likely to discontinue service. Customer tenure was also negatively associated with churn, indicating that customers with longer relationships were more likely to remain with the company.
+
+These findings are consistent with the patterns observed during the exploratory data analysis and provide evidence that agreement period, monthly charges, technical support, and tenure are important factors associated with customer retention.
+
+## Developing the Final Churn Prediction Model
+
+Variables included in the logistic regression model were selected based on the exploratory data analysis. Agreement period, monthly charges, technical support status, and customer tenure demonstrated the strongest relationships with customer churn and were therefore included in the initial model.
+
+All predictors were statistically significant at the 0.05 level. Because each variable contributed meaningful information to predicting churn, no variables were removed from the model. Therefore, the initial logistic regression model was retained as the final working model for predicting customer churn.
+
+## Key Findings and Business Implications
+
+This project used exploratory data analysis and logistic regression to identify factors associated with customer churn. The visual analysis indicated that agreement period, monthly charges, technical support, and customer tenure were strongly related to customer retention.
+
+The logistic regression results confirmed these findings. Customers with month-to-month agreements, higher monthly charges, limited technical support, and shorter tenure were more likely to churn. In contrast, customers with longer contracts, technical support services, and longer tenure were more likely to remain with the company.
+
+Overall, these results suggest that retention efforts should focus on supporting newer customers, improving technical support services, and encouraging longer-term customer agreements.
+

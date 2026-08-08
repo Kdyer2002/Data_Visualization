@@ -1,0 +1,108 @@
+---
+title: "Employee Turnover Dashboard"
+author: "Kayla Dyer"
+date: "July 28th, 2026"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: no
+    code_folding: hide
+    theme: lumen
+---
+
+```{css, echo = FALSE}
+#TOC::before {
+  content: "Table of Contents";
+  font-weight: bold;
+  font-size: 1.2em;
+  display: block;
+  color: navy;
+  margin-bottom: 10px;
+}
+
+h1.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: DarkRed;
+  text-align: center;
+  font-family: "Gill Sans", sans-serif;
+}
+
+h4.author {
+  font-size: 16px;
+  font-weight: bold;
+  color: navy;
+  text-align: center;
+}
+
+h4.date {
+  font-size: 16px;
+  font-weight: bold;
+  color: DarkBlue;
+  text-align: center;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: bold;
+  color: darkred;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: navy;
+}
+
+body {
+  background-color: white;
+}
+
+p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+# Narrative of the Story
+
+Employee turnover is a common workforce challenge that can affect staffing, productivity, organizational performance, and long-term planning. Organizations frequently collect employee information to better understand their workforce and identify characteristics that may be associated with employee turnover. For this project, I used the Employee Turnover dataset to develop an interactive Shiny dashboard that explores employee characteristics and turnover patterns. The primary objective of the dashboard is to examine how employee demographics, work-related characteristics, and organizational experience may be associated with whether employees stayed with or left the organization.
+
+This project focuses on comparing employees who remained with the organization to those who left. Rather than developing a predictive model, the objective is to explore relationships within the data and identify patterns that users can investigate through interactive visualizations. This approach allows the dashboard to serve as an exploratory tool that helps users examine the workforce from multiple perspectives.
+
+The story begins by examining the age distribution of employees to provide an overall view of the workforce. The dashboard then compares employee age with organizational experience to explore whether these two numerical variables appear to have a relationship. Additional visualizations examine how employees are distributed across industries, professions, and gender while also comparing employees who stayed with the organization to those who left. Together, these visualizations provide a broader understanding of the employee population and highlight characteristics that may be associated with employee turnover.
+
+The dashboard is designed to be interactive so users can actively explore the data rather than simply view individual charts. Users can filter the dashboard by industry, profession, and gender, allowing all visualizations to update simultaneously. This functionality makes it easier to compare workforce groups, investigate employee characteristics, and explore turnover patterns from multiple perspectives.
+
+# Data Source
+
+The data used for this project is the Employee Turnover dataset from the Academy to Innovate HR (AIHR). The dataset contains employee information including age, organizational experience, industry, profession, gender, and whether an employee stayed with or left the organization.
+
+I selected this dataset because it contains both numerical and categorical variables that are well suited for building an interactive dashboard. The combination of these variables allows users to examine distributions, compare different employee groups, and explore turnover patterns through interactive filtering and visualization.
+
+**Original Data Source**
+
+https://www.aihr.com/wp-content/uploads/2019/10/turnover-data-set.csv
+
+# Insights Presented
+
+The dashboard is designed to encourage exploration rather than provide a single conclusion. By using the available filters, users can examine how employee characteristics and turnover patterns change across different industries, professions, and gender groups.
+
+The age distribution indicates that many employees in the dataset are concentrated between their mid-twenties and late thirties, providing a useful overview of the workforce. The scatter plot comparing employee age and organizational experience shows that employees of similar ages may have very different levels of organizational experience. In addition, employees who stayed with the organization and those who left are distributed throughout the data, suggesting that turnover is associated with multiple employee characteristics rather than a single factor.
+
+The industry and profession charts demonstrate that some industries and professional roles contain substantially more employees than others. This provides important context when interpreting turnover patterns because larger employee groups naturally contribute more observations to the analysis. The turnover status chart also shows that employees who stayed and employees who left are relatively balanced within the dataset, allowing meaningful comparisons between the two groups.
+
+Overall, the dashboard enables users to interact with the data, compare different employee groups, and investigate patterns that may not be immediately apparent when viewing the dataset in a static format.
+
+# Conclusion
+
+This interactive dashboard demonstrates how Shiny can be used to explore employee turnover through coordinated visualizations and shared filters. By combining multiple charts into a single dashboard, users can compare workforce characteristics, investigate turnover patterns, and better understand how employee demographics and organizational experience vary across different groups. The dashboard provides a flexible environment for exploring the data while supporting informed interpretation through interactive visualization.

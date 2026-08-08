@@ -1,0 +1,951 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 20262.26.0603.1643                               -->
+<workbook original-version='18.1' source-build='2026.2.0 (20262.26.0603.1643)' source-platform='mac' version='18.1' xml:base='https://public.tableau.com' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <AnimationOnByDefault />
+    <MarkAnimation />
+    <ObjectModelEncapsulateLegacy />
+    <ObjectModelExtractV2 />
+    <ObjectModelTableType />
+    <SchemaViewerObjectModel />
+    <SheetIdentifierTracking />
+    <VConnDownstreamExtractsWithWarnings />
+    <WindowsPersistSimpleIdentifiers />
+  </document-format-change-manifest>
+  <repository-location id='Project4_KaylaDyer' path='/workbooks' revision='1.4' />
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='BankMarketingCSV' inline='true' name='federated.1g7gei61fqzg5l17es9dj0xaxcnk' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='BankMarketingCSV' name='textscan.157u2ub0ucj05s1749owv0jf1wry'>
+            <connection class='textscan' directory='/Users/kayladyer/Library/CloudStorage/OneDrive-WestChesterUniversityofPA/STA 553/Data' filename='BankMarketingCSV.csv' password='' server='' workgroup-auth-mode='as-is' />
+          </named-connection>
+        </named-connections>
+        <relation connection='textscan.157u2ub0ucj05s1749owv0jf1wry' name='BankMarketingCSV.csv' table='[BankMarketingCSV#csv]' type='table'>
+          <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+            <column datatype='integer' name='F1' ordinal='0' />
+            <column datatype='integer' name='age' ordinal='1' />
+            <column datatype='string' name='job' ordinal='2' />
+            <column datatype='string' name='marital' ordinal='3' />
+            <column datatype='string' name='education' ordinal='4' />
+            <column datatype='string' name='default' ordinal='5' />
+            <column datatype='integer' name='balance' ordinal='6' />
+            <column datatype='string' name='housing' ordinal='7' />
+            <column datatype='string' name='loan' ordinal='8' />
+            <column datatype='string' name='contact' ordinal='9' />
+            <column datatype='integer' name='day' ordinal='10' />
+            <column datatype='string' name='month' ordinal='11' />
+            <column datatype='integer' name='duration' ordinal='12' />
+            <column datatype='integer' name='campaign' ordinal='13' />
+            <column datatype='integer' name='pdays' ordinal='14' />
+            <column datatype='integer' name='previous' ordinal='15' />
+            <column datatype='string' name='poutcome' ordinal='16' />
+            <column datatype='string' name='y' ordinal='17' />
+          </columns>
+        </relation>
+        <metadata-records>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>F1</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[F1]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>F1</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>age</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[age]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>age</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>job</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[job]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>job</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>marital</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[marital]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>marital</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>education</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[education]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>education</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>default</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[default]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>default</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>balance</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[balance]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>balance</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>housing</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[housing]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>housing</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>loan</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[loan]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>loan</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>contact</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[contact]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>contact</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>day</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[day]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>day</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>month</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[month]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>month</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>duration</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[duration]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>duration</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>campaign</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[campaign]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>campaign</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>pdays</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[pdays]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>pdays</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>previous</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[previous]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>previous</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>poutcome</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[poutcome]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>poutcome</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>y</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[y]</local-name>
+            <parent-name>[BankMarketingCSV.csv]</parent-name>
+            <remote-alias>y</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column aggregation='None' datatype='integer' name='[Age (bin)]' role='dimension' type='quantitative'>
+        <calculation class='bin' decimals='0' formula='[age]' peg='0' size='4.97' />
+      </column>
+      <column caption='BankMarketingCSV.csv' datatype='table' name='[__tableau_internal_object_id__].[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]' role='measure' type='quantitative' />
+      <column caption='Age' datatype='integer' name='[age]' role='measure' type='quantitative' />
+      <column caption='Balance' datatype='integer' name='[balance]' role='measure' type='quantitative' />
+      <column caption='Campaign' datatype='integer' name='[campaign]' role='measure' type='quantitative' />
+      <column caption='Contact' datatype='string' name='[contact]' role='dimension' type='nominal' />
+      <column caption='Day' datatype='integer' name='[day]' role='dimension' type='quantitative' />
+      <column caption='Default' datatype='string' name='[default]' role='dimension' type='nominal' />
+      <column caption='Duration' datatype='integer' name='[duration]' role='measure' type='quantitative' />
+      <column caption='Education' datatype='string' name='[education]' role='dimension' type='nominal' />
+      <column caption='Housing' datatype='string' name='[housing]' role='dimension' type='nominal' />
+      <column caption='Job' datatype='string' name='[job]' role='dimension' type='nominal' />
+      <column caption='Loan' datatype='string' name='[loan]' role='dimension' type='nominal' />
+      <column caption='Marital' datatype='string' name='[marital]' role='dimension' type='nominal' />
+      <column caption='Month' datatype='string' name='[month]' role='dimension' type='nominal' />
+      <column caption='Pdays' datatype='integer' name='[pdays]' role='measure' type='quantitative' />
+      <column caption='Poutcome' datatype='string' name='[poutcome]' role='dimension' type='nominal' />
+      <column caption='Previous' datatype='integer' name='[previous]' role='measure' type='quantitative' />
+      <column caption='Y' datatype='string' name='[y]' role='dimension' type='nominal' />
+      <extract count='-1' enabled='true' object-id='' units='records' user-specific='false'>
+        <connection access_mode='readonly' author-locale='en_US' class='hyper' dbname='/var/folders/lv/qmt2k1hd5r1bd0hgfr4lx2j00000gn/T/tableau-temp/#TableauTemp_0mhvy271pqcfv81261bzg01cvuzt.hyper' default-settings='hyper' schema='Extract' sslmode='' tablename='Extract' update-time='06/27/2026 01:15:26 AM' username='tableau_internal_user'>
+          <relation name='Extract' table='[Extract].[Extract]' type='table' />
+          <metadata-records>
+            <metadata-record class='column'>
+              <remote-name>F1</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[F1]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>F1</remote-alias>
+              <ordinal>0</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>45211</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>age</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[age]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>age</remote-alias>
+              <ordinal>1</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>87</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>job</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[job]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>job</remote-alias>
+              <ordinal>2</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>12</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>marital</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[marital]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>marital</remote-alias>
+              <ordinal>3</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>3</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>education</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[education]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>education</remote-alias>
+              <ordinal>4</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>4</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>default</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[default]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>default</remote-alias>
+              <ordinal>5</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>balance</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[balance]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>balance</remote-alias>
+              <ordinal>6</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>6205</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>housing</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[housing]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>housing</remote-alias>
+              <ordinal>7</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>loan</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[loan]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>loan</remote-alias>
+              <ordinal>8</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>contact</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[contact]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>contact</remote-alias>
+              <ordinal>9</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>3</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>day</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[day]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>day</remote-alias>
+              <ordinal>10</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>31</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>month</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[month]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>month</remote-alias>
+              <ordinal>11</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>12</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>duration</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[duration]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>duration</remote-alias>
+              <ordinal>12</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>1618</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>campaign</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[campaign]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>campaign</remote-alias>
+              <ordinal>13</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>50</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>pdays</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[pdays]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>pdays</remote-alias>
+              <ordinal>14</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>781</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>previous</remote-name>
+              <remote-type>20</remote-type>
+              <local-name>[previous]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>previous</remote-alias>
+              <ordinal>15</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>integer</local-type>
+              <aggregation>Sum</aggregation>
+              <approx-count>35</approx-count>
+              <contains-null>true</contains-null>
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>poutcome</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[poutcome]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>poutcome</remote-alias>
+              <ordinal>16</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>4</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+            <metadata-record class='column'>
+              <remote-name>y</remote-name>
+              <remote-type>129</remote-type>
+              <local-name>[y]</local-name>
+              <parent-name>[Extract]</parent-name>
+              <remote-alias>y</remote-alias>
+              <ordinal>17</ordinal>
+              <family>BankMarketingCSV.csv</family>
+              <local-type>string</local-type>
+              <aggregation>Count</aggregation>
+              <approx-count>2</approx-count>
+              <contains-null>true</contains-null>
+              <collation flag='0' name='LEN_RUS' />
+              <object-id>[BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39]</object-id>
+            </metadata-record>
+          </metadata-records>
+        </connection>
+      </extract>
+      <layout dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+      <object-graph>
+        <objects>
+          <object caption='BankMarketingCSV.csv' id='BankMarketingCSV.csv_4F342C0BFD8B4243A9EA748AACFD6A39'>
+            <properties context=''>
+              <relation connection='textscan.157u2ub0ucj05s1749owv0jf1wry' name='BankMarketingCSV.csv' table='[BankMarketingCSV#csv]' type='table'>
+                <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+                  <column datatype='integer' name='F1' ordinal='0' />
+                  <column datatype='integer' name='age' ordinal='1' />
+                  <column datatype='string' name='job' ordinal='2' />
+                  <column datatype='string' name='marital' ordinal='3' />
+                  <column datatype='string' name='education' ordinal='4' />
+                  <column datatype='string' name='default' ordinal='5' />
+                  <column datatype='integer' name='balance' ordinal='6' />
+                  <column datatype='string' name='housing' ordinal='7' />
+                  <column datatype='string' name='loan' ordinal='8' />
+                  <column datatype='string' name='contact' ordinal='9' />
+                  <column datatype='integer' name='day' ordinal='10' />
+                  <column datatype='string' name='month' ordinal='11' />
+                  <column datatype='integer' name='duration' ordinal='12' />
+                  <column datatype='integer' name='campaign' ordinal='13' />
+                  <column datatype='integer' name='pdays' ordinal='14' />
+                  <column datatype='integer' name='previous' ordinal='15' />
+                  <column datatype='string' name='poutcome' ordinal='16' />
+                  <column datatype='string' name='y' ordinal='17' />
+                </columns>
+              </relation>
+            </properties>
+            <properties context='extract'>
+              <relation name='Extract' table='[Extract].[Extract]' type='table' />
+            </properties>
+          </object>
+        </objects>
+      </object-graph>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Histogram - Customer Age'>
+      <layout-options>
+        <title>
+          <formatted-text>
+            <run bold='true' fontalignment='1' fontsize='18'>Distribution of Customer Ages</run>
+          </formatted-text>
+        </title>
+      </layout-options>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='BankMarketingCSV' name='federated.1g7gei61fqzg5l17es9dj0xaxcnk' />
+          </datasources>
+          <datasource-dependencies datasource='federated.1g7gei61fqzg5l17es9dj0xaxcnk'>
+            <column aggregation='None' datatype='integer' name='[Age (bin)]' role='dimension' type='quantitative'>
+              <calculation class='bin' decimals='0' formula='[age]' peg='0' size='4.97' />
+            </column>
+            <column caption='Age' datatype='integer' name='[age]' role='measure' type='quantitative' />
+            <column-instance column='[age]' derivation='Count' name='[cnt:age:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Age (bin)]' derivation='None' name='[none:Age (bin):qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='axis'>
+            <format attr='title' class='0' field='[federated.1g7gei61fqzg5l17es9dj0xaxcnk].[none:Age (bin):qk]' scope='cols' value='Customer Age (Years)' />
+            <format attr='title' class='0' field='[federated.1g7gei61fqzg5l17es9dj0xaxcnk].[cnt:age:qk]' scope='rows' value='Number of Customers' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <mark-sizing custom-mark-size-in-axis-units='1.0' mark-alignment='mark-alignment-left' mark-sizing-setting='marks-scaling-on' use-custom-mark-size='false' />
+            <customized-tooltip>
+              <formatted-text>
+                <run fontname='Tableau Light'>Customer Age</run>
+                <run>Æ&#10;</run>
+                <run bold='true' fontname='Tableau Light'><![CDATA[<[federated.1g7gei61fqzg5l17es9dj0xaxcnk].[none:Age (bin):qk]>]]></run>
+                <run>Æ&#10;&#10;</run>
+                <run fontname='Tableau Light'>Number of Customers</run>
+                <run>Æ&#10;</run>
+                <run bold='true' fontname='Tableau Light'><![CDATA[<[federated.1g7gei61fqzg5l17es9dj0xaxcnk].[cnt:age:qk]>]]></run>
+              </formatted-text>
+            </customized-tooltip>
+          </pane>
+        </panes>
+        <rows>[federated.1g7gei61fqzg5l17es9dj0xaxcnk].[cnt:age:qk]</rows>
+        <cols>[federated.1g7gei61fqzg5l17es9dj0xaxcnk].[none:Age (bin):qk]</cols>
+        <show-full-range>
+          <column>[federated.1g7gei61fqzg5l17es9dj0xaxcnk].[Age (bin)]</column>
+        </show-full-range>
+      </table>
+      <simple-id uuid='{1365DCEA-8E0A-43E0-A9F8-5DAD545E089C}' />
+    </worksheet>
+  </worksheets>
+  <windows source-height='30'>
+    <window class='worksheet' maximized='true' name='Histogram - Customer Age'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <simple-id uuid='{B90B757F-5007-4C92-9235-823235475E1A}' />
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='384' name='Histogram - Customer Age' width='384'>
+      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
+      AAAAAElFTkSuQmCC
+    </thumbnail>
+  </thumbnails>
+</workbook>

@@ -1,0 +1,129 @@
+---
+title: "Bank Marketing Campaign Dashboard"
+author: "Kayla Dyer"
+date: "June 21st, 2026"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: no
+    code_folding: hide
+    theme: lumen
+---
+
+```{css, echo = FALSE}
+#TOC::before {
+  content: "Table of Contents";
+  font-weight: bold;
+  font-size: 1.2em;
+  display: block;
+  color: navy;
+  margin-bottom: 10px;
+}
+
+h1.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: DarkRed;
+  text-align: center;
+  font-family: "Gill Sans", sans-serif;
+}
+
+h4.author {
+  font-size: 16px;
+  font-weight: bold;
+  color: navy;
+  text-align: center;
+}
+
+h4.date {
+  font-size: 16px;
+  font-weight: bold;
+  color: DarkBlue;
+  text-align: center;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: bold;
+  color: darkred;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: navy;
+}
+
+body {
+  background-color: white;
+}
+
+p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+# Narrative of the Story
+
+Direct marketing campaigns are commonly used by financial institutions to promote products and services to customers. However, not all customers have the same background, financial situation, or relationship with the bank. For this project, I used the UCI Bank Marketing dataset to build an interactive Tableau dashboard that explores the customer population included in a bank marketing campaign. The main purpose of the dashboard is to better understand who the customers are by looking at their age, account balance, occupation, education level, and marital status.
+
+My original data story focused on understanding customer characteristics in the context of bank marketing. As I developed the dashboard, I decided to focus the visual story on the demographic and financial profile of the customers rather than trying to make a prediction about whether a customer subscribed to a term deposit. This allowed the dashboard to clearly show patterns in the customer base and give viewers a way to explore how different characteristics relate to one another.
+
+The first part of the story begins with the age distribution of customers. The histogram shows that the customer population is mostly concentrated between approximately 30 and 50 years of age. This gives a useful starting point because age is one of the main numerical variables in the dataset and helps describe the overall customer group. After looking at age by itself, the dashboard then compares age with account balance using a scatter plot. This chart shows that account balances vary across many different age groups. Most customers appear to have lower or moderate balances, but there are also several customers with noticeably higher balances, which appear as outliers in the scatter plot.
+
+The categorical charts add more detail to the story by showing how customers are distributed across different groups. The occupation chart shows that blue-collar and management customers are the largest occupational groups in the dataset. The education chart shows that secondary education is the most common education level. The marital status chart shows that married customers make up the largest share of the customer population, followed by single and divorced customers. Together, these charts help describe the types of customers included in the bank marketing data.
+
+The dashboard is designed to be interactive so that the viewer is not limited to reading each chart separately. When a user clicks on a category, such as an occupation or education level, the other charts update automatically. This makes it possible to explore the relationships among the different customer characteristics. For example, selecting one occupation group changes the age distribution, account balance scatter plot, education distribution, and marital status distribution for that selected group. This interactivity helps turn the dashboard from a static display into a tool for exploring the data.
+
+# Data Sources and Description
+
+The dataset used for this project is the UCI Bank Marketing dataset. The data were collected from direct telephone marketing campaigns conducted by a Portuguese banking institution. The full dataset includes customer demographic information, financial information, previous marketing campaign information, and whether the customer subscribed to a term deposit.
+
+For this dashboard, I selected variables that supported the required numerical and categorical visualizations. The two main numerical variables used were customer age and account balance. Age was used to create a histogram, while age and balance were used together in the scatter plot. These two charts satisfy the numerical variable requirement because they allow the dashboard to show both a distribution and a relationship between two numerical variables.
+
+The categorical variables used in the dashboard were occupation, education level, and marital status. These variables were chosen because they describe important background characteristics of the customers and can be clearly displayed using bar charts and a pie chart. Occupation and marital status were shown with bar charts because those charts make it easier to compare category counts. Education level was shown with a pie chart because it summarizes the relative share of customers in each education category.
+
+The dashboard includes five main visualizations: a customer age histogram, an age and account balance scatter plot, an occupation distribution bar chart, an education level pie chart, and a marital status distribution bar chart. Each chart contributes to the overall story by showing a different part of the customer profile. The dashboard also includes short captions to explain the main takeaway from each visualization.
+
+# Dashboard and Story Point Description
+
+The Tableau dashboard was created as a single-page dashboard that combines all five visualizations into one layout. I organized the dashboard so that the numerical charts appear toward the top and the categorical summaries appear below them. This layout helps the viewer first understand the numerical characteristics of the customers and then move into the demographic categories.
+
+The dashboard title is “Bank Marketing Customer Analysis Dashboard,” which clearly states the topic of the project. Each individual chart also has a descriptive title, such as “Customer Age Distribution,” “Age vs. Account Balance,” “Occupation Distribution,” “Education Levels,” and “Marital Status Distribution.” I also shortened several axis labels to make the dashboard cleaner and easier to read. For example, the histogram uses “Customers” as the y-axis label, and the scatter plot uses “Balance” as the y-axis label.
+
+The visual design uses a simple and consistent color style. The histogram, scatter plot, occupation bar chart, and marital status bar chart use the same blue color, which gives the dashboard a consistent appearance. The education pie chart uses multiple colors because it represents different education categories. I avoided adding unnecessary colors so that the dashboard would remain clean and easy to interpret.
+
+A Tableau Story Point was also created to introduce the dashboard. The story point explains that the dashboard examines customer demographics in a bank marketing campaign and tells viewers that they can select values in the charts to filter the remaining visualizations. This story point gives context before the viewer interacts with the dashboard and helps connect the visualizations to the overall purpose of the project.
+
+# Interactive Features
+
+One of the most important parts of this dashboard is that the charts are connected to one another. I added dashboard actions so that selecting a category or mark in one chart updates the other charts. This satisfies the reactive dashboard requirement because the visualizations are not independent; they respond to the user’s selections.
+
+For example, clicking a slice in the education pie chart filters the age distribution, scatter plot, occupation chart, and marital status chart to only show customers in that education group. Clicking an occupation in the occupation bar chart also updates the other visualizations. This allows users to explore questions such as how age distributions differ across occupations or how marital status varies among customers with different education levels.
+
+This interactivity supports the main purpose of the project because it helps the viewer explore the customer population in more detail. Instead of only presenting summary charts, the dashboard lets the viewer interact with the data and examine patterns across customer groups.
+
+# Embedding Tableau Dashboard and Story Points to the Report
+
+The Tableau Story Point and Dashboard were published on Tableau Public. The interactive story point is embedded below.
+
+```{=html}
+\<div class='tableauPlaceholder' id='viz1782704251968' style='position: relative'><noscript><a href='#'><img alt='Bank Marketing Customer Analysis Story ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Pr&#47;Project4_KaylaDyer&#47;BankMarketingCustomerAnalysisStory&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Project4_KaylaDyer&#47;BankMarketingCustomerAnalysisStory' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Pr&#47;Project4_KaylaDyer&#47;BankMarketingCustomerAnalysisStory&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1782704251968');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='810px';vizElement.style.height='1127px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+```
+               
+# Conclusion
+
+Overall, this project shows how Tableau can be used to create an interactive dashboard that communicates a clear data story. The dashboard uses both numerical and categorical variables to describe the customer population in the Bank Marketing dataset. The age histogram shows that most customers are between about 30 and 50 years old, while the scatter plot shows that account balances vary across age groups and include several high-balance outliers. The categorical charts show that blue-collar and management occupations are the largest occupational groups, secondary education is the most common education level, and married customers make up the largest marital status group.
+
+The final dashboard meets the project requirements by including multiple chart types, descriptive titles, axis labels, informative captions, and interactive filtering. The Tableau Story Point adds context to the dashboard and explains how the viewer can interact with the visualizations. Together, the dashboard and story point provide a clear and organized summary of the customer characteristics represented in the bank marketing data.
+

@@ -1,0 +1,478 @@
+---
+title: "Data Storytelling Project: HR Workforce Analytics"
+author: "Kayla Dyer"
+date: "June 2, 2026"
+output:
+  html_document: 
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+    number_sections: yes
+    toc_collapsed: yes
+    code_folding: hide
+    code_download: yes
+    smooth_scroll: yes
+    theme: lumen
+  pdf_document: 
+    toc: yes
+    toc_depth: 4
+    fig_caption: yes
+    number_sections: yes
+    fig_width: 3
+    fig_height: 3
+  word_document: 
+    toc: yes
+    toc_depth: 4
+    fig_caption: yes
+    keep_md: yes
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{css, echo = FALSE}
+#TOC::before {
+  content: "Table of Contents";
+  font-weight: bold;
+  font-size: 1.2em;
+  display: block;
+  color: navy;
+  margin-bottom: 10px;
+}
+
+
+div#TOC li {     /* table of content  */
+    list-style:upper-roman;
+    background-image:none;
+    background-repeat:none;
+    background-position:0;
+}
+
+h1.title {    /* level 1 header of title  */
+  font-size: 22px;
+  font-weight: bold;
+  color: DarkRed;
+  text-align: center;
+  font-family: "Gill Sans", sans-serif;
+}
+
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  font-size: 15px;
+  font-weight: bold;
+  font-family: system-ui;
+  color: navy;
+  text-align: center;
+}
+
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Gill Sans", sans-serif;
+  color: DarkBlue;
+  text-align: center;
+}
+
+h1 { /* Header 1 - and the author and data headers use this too  */
+    font-size: 20px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: center;
+}
+
+h2 { /* Header 2 - and the author and data headers use this too  */
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: navy;
+    text-align: left;
+}
+
+h3 { /* Header 3 - and the author and data headers use this too  */
+    font-size: 16px;
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: navy;
+    text-align: left;
+}
+
+h4 { /* Header 4 - and the author and data headers use this too  */
+    font-size: 14px;
+  font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: left;
+}
+
+/* Add dots after numbered headers */
+.header-section-number::after {
+  content: ".";
+
+body { background-color:white; }
+
+.highlightme { background-color:yellow; }
+
+p { background-color:white; }
+
+}
+```
+
+```{r setup, include=FALSE}
+# Load required libraries
+library(tidyverse)  # For data manipulation and visualization
+library(ggplot2)    # For advanced plotting
+library(naniar)     # For missing data visualization
+library(skimr)      # For compact data summaries
+library(GGally)     # For parallel coordinate plots and scatterplot matrices
+library(plotly)     # For interactive visualizations
+library(DT)         # For interactive tables
+
+hr_data <- read.csv("/Users/kayladyer/Library/CloudStorage/OneDrive-WestChesterUniversityofPA/STA 553/Data/HRDatasetV14.csv")
+
+df<-hr_data
+
+# Global chunk options
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 10,
+  fig.height = 6,
+  fig.align = "center"
+)
+
+# Custom theme for consistent visual design
+theme_storytelling <- theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", margin = margin(b = 10)),
+    plot.subtitle = element_text(size = 12, color = "grey40"),
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    legend.position = "bottom",
+    panel.grid.major = element_line(color = "grey90"),
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(20, 20, 20, 20)
+  )
+```
+
+# Introduction and Motivation
+
+Know Your Data and Practical Questions
+
+## Background Story and Data Generation Process
+
+How the data was collected: This project uses the HRDatasetV14 workforce analytics dataset, which contains 311 employee records and 36 variables. Each observation represents one employee. The dataset includes demographic information, employment details, salary, department, position, recruitment source, performance scores, engagement survey results, employee satisfaction scores, and attendance measures. The data appear to have been collected from organizational human resource records and employee management systems. This dataset was selected to explore workforce patterns and relationships among compensation, performance, engagement, satisfaction, and employment status.
+
+**Data Dictionary**
+
+Population: The target population consists of employees represented in the organization's human resource records. The sampling frame includes all employees contained in the dataset. Each observation corresponds to one employee. The final dataset contains 311 employee records available for analysis.
+
+```{r}
+# Create an interactive data dictionary
+data_dictionary <- tribble(
+  ~Variable_Name, ~Description, ~Variable_Type,
+
+  "Salary", "Annual employee salary in dollars", "Continuous Numeric",
+
+  "EngagementSurvey", "Employee engagement survey score", "Continuous Numeric",
+
+  "EmpSatisfaction", "Employee satisfaction score", "Discrete Numeric",
+
+  "Absences", "Number of employee absences", "Discrete Numeric",
+
+  "SpecialProjectsCount", "Number of special projects assigned", "Discrete Numeric",
+
+  "Department", "Employee department", "Categorical",
+
+  "Position", "Employee job position", "Categorical",
+
+  "Sex", "Employee gender", "Categorical",
+
+  "RecruitmentSource", "Source used to recruit employee", "Categorical",
+
+  "PerformanceScore", "Employee performance rating", "Categorical"
+)
+
+datatable(
+  data_dictionary,
+  caption = "Table 1: Variable definitions and types for the analysis dataset",
+  rownames = FALSE,
+  options = list(pageLength = 10, dom = 'tip')
+)
+```
+
+
+## Business Questions and Hypotheses
+
+The purpose of collecting this dataset was to answer the following practical business questions:
+
+**Business Question 1**: How does employee salary relate to performance ratings?
+
+**Business Question 2**: Do employee satisfaction and engagement survey scores differ across departments?
+
+**Business Question 3**: Are employee absences associated with performance ratings or employee satisfaction?
+
+Hypotheses derived from domain knowledge:
+
+**H1**: Employees with higher salaries tend to receive higher performance ratings.
+
+**H2**: Employee satisfaction and engagement survey scores differ across departments.
+
+**H3**: Employees with more absences tend to have lower performance ratings and lower satisfaction scores.
+
+These hypotheses will guide our exploratory visual analysis and help us focus the narrative.
+
+
+
+
+# Visual Exploratory Analytic Plan (What to Visualize)
+
+**Narrative of the plan**: The exploratory visual analysis of the HRDatasetV14 workforce analytics dataset is designed to understand employee characteristics, workplace engagement, performance, and compensation patterns. The analysis will begin with data quality checks and missing value assessments. Next, univariate visualizations will be used to examine the distributions of key variables such as Salary, EngagementSurvey, EmpSatisfaction, and Absences. Bivariate visualizations will then explore relationships between salary and performance ratings, satisfaction and department, and absences and employee outcomes. These visualizations will help identify trends, differences among employee groups, and potential factors associated with workforce performance and engagement.
+
+## Overall Data Inspection — Missing Values and Data Quality
+
+**Goal**: 
+
+* Assess the completeness, consistency, and quality of the HRDatasetV14 workforce analytics dataset before conducting exploratory analysis. Particular attention will be given to missing values, employee records, salary information, performance measures, engagement survey responses, and attendance-related variables.
+
+* Visualize the missing data pattern using an aggregated heatmap or upset plot.
+
+* Examine the proportion of missing values per variable and identify any systematic missingness patterns.
+
+* Check for potential data entry errors (e.g., implausible age values, negative amounts).
+
+
+## Variable Inspections — Distribution Analysis
+
+**Goal**: Understand the distributions of important HR variables, including Salary, EngagementSurvey, EmpSatisfaction, Absences, Department, Position, PerformanceScore, and EmploymentStatus.
+
+* **Numeric variables**: Histograms with overlaid density curves, supplemented by boxplots to detect outliers.
+
+* **Categorical variables**: Bar charts ordered by frequency, supplemented by proportional displays (waffle or treemap alternatives if needed).
+
+* **Date/time variables**: Time series trend plots to understand temporal patterns (if applicable).
+
+
+## Relationships Between Variables
+
+**Goal**: Investigate relationships among salary, performance ratings, employee satisfaction, engagement survey scores, absences, departments, and employment status to answer the practical workforce analytics questions identified earlier.
+
+* **Numerical vs. Numerical**: Scatterplots with local regression (LOESS) smoothers to detect linear/non-linear trends. Correlation matrices with hierarchical clustering.
+
+* **Categorical vs. Categorical**: Grouped and stacked bar charts to compare proportions. Mosaic plots for complex contingency tables.
+
+* **Numerical vs. Categorical**: Side-by-side boxplots, violin plots, and ridge density plots to compare distributions across categories.
+
+
+# Effective Visual Design 
+
+(How to Visualize)
+
+## Section: Data Quality and Missing Value Assessment
+
+### Missing Data Pattern
+
+**Opening paragraph**: Before analyzing workforce patterns, it is important to evaluate the completeness and quality of the HRDatasetV14 data. Missing values in salary, performance, satisfaction, engagement, or attendance variables could affect the reliability of conclusions. This visualization examines the amount and distribution of missing data across all variables to identify potential data quality concerns before proceeding with further analysis.
+
+
+```{r}
+df <- hr_data
+# Proportion missing by variable
+missing_summary <- df %>%
+  summarise(across(everything(), ~ mean(is.na(.)) * 100)) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "pct_missing") %>%
+  arrange(desc(pct_missing))
+
+ggplot(missing_summary, aes(x = reorder(variable, pct_missing), y = pct_missing)) +
+  geom_col(fill = "steelblue", alpha = 0.8) +
+  geom_text(aes(label = paste0(round(pct_missing, 1), "%")), hjust = -0.1, size = 3.5) +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, max(missing_summary$pct_missing) * 1.2)) +
+  labs(
+    title = "Proportion of Missing Values by Variable",
+    subtitle = "Variables with high missingness rates may require imputation or exclusion",
+    x = NULL,
+    y = "Percentage Missing (%)"
+  ) +
+  theme_minimal()
+```
+
+
+**Summary of Observations and Implications**: The missing value analysis shows that the HR dataset is highly complete. Only `ManagerID` has missing values, with about 2.6% missing. All other variables have 0% missing values. This suggests that the dataset is reliable for analysis and does not require major imputation or removal of records. Because the missing values are limited to one management-related variable, they are unlikely to affect the main analysis of salary, performance, engagement, satisfaction, absences, and department differences.
+
+## Univariate Distribution Analysis
+
+### Distributions of Key Numeric Variables
+
+**Opening paragraph**: Understanding the distribution of key workforce metrics helps identify patterns, skewness, and potential outliers that may influence business decisions and statistical analyses. Histograms combined with density curves provide insight into how employee salaries, engagement levels, satisfaction scores, attendance, lateness, and project participation are distributed across the organization. Examining these distributions allows us to assess workforce consistency and identify areas that may require further investigation.
+
+```{r fig.align='center', fig.height=6, fig.width=7}
+# Reshape numeric variables to long format for faceted plotting
+df_numeric_long <- df %>%
+  select(Salary, EngagementSurvey, EmpSatisfaction, Absences, SpecialProjectsCount, DaysLateLast30) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "value")
+
+ggplot(df_numeric_long, aes(x = value)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "skyblue", alpha = 0.6, color = "white") +
+  geom_density(color = "darkblue", linewidth = 1) +
+  facet_wrap(~ variable, scales = "free", ncol = 2) +
+  labs(
+    title = "Distributions of Key Numeric HR Variables",
+    subtitle = "Salary, engagement, satisfaction, absences, special projects, and lateness",
+    x = NULL,
+    y = "Density"
+  ) +
+  theme_minimal()
+```
+
+
+**Summary of Observations and Implications**: Salary exhibits a right-skewed distribution, indicating that most employees earn within a lower salary range while a smaller group earns substantially higher salaries. Employee engagement and satisfaction scores are concentrated toward the upper end of their scales, suggesting generally positive workplace perceptions. DaysLateLast30 is heavily concentrated at zero, indicating that most employees were not late during the previous month, while SpecialProjectsCount is concentrated at lower values, showing that only a subset of employees participate in multiple projects. Overall, the workforce appears engaged, satisfied, and relatively consistent in attendance behavior.
+
+
+### Distributions of Categorical Variables
+
+**Opening paragraph**: Categorical variables provide insight into the composition of the workforce by showing how employees are distributed across departments, positions, employment statuses, demographic groups, and other organizational categories. Frequency-based visualizations help identify dominant groups, potential imbalances, and areas where representation may be limited. Understanding these workforce segments provides important context for interpreting patterns in compensation, performance, engagement, and retention throughout the organization.
+
+```{r fig.align='center', fig.height=7, fig.width=8}
+
+categorical_long <- df %>%
+  select(Department, EmploymentStatus, PerformanceScore, Sex) %>%
+  pivot_longer(
+    everything(),
+    names_to = "variable",
+    values_to = "category"
+  ) %>%
+  count(variable, category)
+
+ggplot(categorical_long,
+       aes(x = reorder(category, n), y = n)) +
+  geom_col(fill = "steelblue", alpha = 0.8) +
+  coord_flip() +
+  facet_wrap(~variable, scales = "free_y", ncol = 2) +
+  labs(
+    title = "Distributions of Key Categorical HR Variables",
+    subtitle = "Employee counts across departments, employment statuses, performance ratings, and sex",
+    x = NULL,
+    y = "Employee Count"
+  ) +
+  theme_minimal()
+```
+
+**Summary of Observations and Implications**: The categorical distributions reveal several notable workforce patterns. The Production department contains the largest share of employees, while smaller departments such as Executive Office and Admin Offices have relatively few employees. Most employees are classified as Active, with substantially fewer voluntary or involuntary terminations. Performance ratings are heavily concentrated in the "Fully Meets" category, indicating that most employees meet performance expectations, while only a small number require improvement or are on performance improvement plans. The workforce is also relatively balanced by sex, although females slightly outnumber males. These findings suggest a stable workforce with generally satisfactory performance and limited turnover.
+
+
+
+## Relationships Between Variables
+
+### Correlation and Trend Discovery
+
+**Opening paragraph**: Examining relationships between numeric HR variables helps determine whether salary, engagement, satisfaction, absences, and lateness are connected in meaningful ways. A scatterplot matrix with correlation values allows us to compare these variables visually and identify whether stronger patterns or weak relationships exist across employee outcomes.
+
+```{r fig.align='center', fig.width=12, fig.height=8}
+
+df %>%
+  select(Salary, EngagementSurvey, EmpSatisfaction, Absences, DaysLateLast30) %>%
+  ggpairs(
+    lower = list(
+      continuous = wrap("smooth", method = "loess", se = TRUE, alpha = 0.3, color = "steelblue")
+    ),
+    diag = list(
+      continuous = wrap("barDiag", fill = "skyblue", alpha = 0.6)
+    ),
+    upper = list(
+      continuous = wrap("cor", size = 4, color = "darkred")
+    )
+  ) +
+  labs(
+    title = "Relationships Among Key Numeric HR Variables",
+    subtitle = "Correlation values and smoothed pairwise relationships"
+  )
+
+```
+
+**Summary of Observations and Implications**: The pairwise analysis shows generally weak relationships among the selected HR variables. Employee engagement and satisfaction exhibit a small positive correlation, while DaysLateLast30 is moderately negatively related to both engagement and satisfaction, suggesting that less engaged and less satisfied employees tend to have more lateness incidents. Salary and absences show little association with the other variables. Overall, the low correlations indicate that these measures capture different aspects of employee behavior and are unlikely to create multicollinearity concerns in future analyses.
+
+### Comparing Distributions Across Groups
+
+**Opening paragraph**: Comparing a numerical outcome across categorical groups helps determine whether different segments of the population exhibit distinct behaviors or performance levels. Violin plots provide a detailed view of each group's distribution by combining summary statistics with density information, allowing us to assess differences in central tendency, variability, skewness, and potential subgroups that may not be visible in simple bar charts or summary tables.
+
+```{r fig.align='center', fig.width=10, fig.height=6}
+df %>%
+  filter(!is.na(Department), !is.na(Salary)) %>%
+  ggplot(aes(x = Department, y = Salary)) +
+  geom_violin(fill = "skyblue", alpha = 0.6) +
+  geom_boxplot(width = 0.15, fill = "white", alpha = 0.8) +
+  coord_flip() +
+  labs(
+    title = "Salary Distribution by Department",
+    subtitle = "Violin and boxplots compare salary patterns across employee departments",
+    x = "Department",
+    y = "Salary"
+  ) +
+  theme_minimal()
+```
+
+**Summary of Observations and Implications**: Salary distributions differ across departments. Software Engineering and IT/IS appear to have higher salary ranges, while Production and Sales are more concentrated at lower salary levels. The Executive Office shows a very high salary value, but because there are very few observations in that department, it should be interpreted cautiously. Overall, department appears to be an important factor when examining salary differences across employees.
+
+### Contingency and Association
+
+**Opening paragraph**: When both variables are categorical, the goal is to determine whether the distribution of one variable changes across the levels of another. A normalized stacked bar chart highlights differences in proportions rather than raw counts, making it easier to identify patterns of association and potential relationships between categories.
+
+```{r fig.align='center', fig.width=9, fig.height=6}
+ggplot(df, aes(x = Department, fill = EmploymentStatus)) +
+  geom_bar(position = "fill", alpha = 0.85) +
+  scale_y_continuous(labels = scales::percent) +
+  coord_flip() +
+  labs(
+    title = "Employment Status by Department",
+    subtitle = "Proportion of employment statuses within each department",
+    x = "Department",
+    y = "Percentage of Employees",
+    fill = "Employment Status"
+  ) +
+  theme_minimal()
+```
+
+**Summary of Observations and Implications**: Most departments are composed primarily of active employees, although the proportion of employment statuses varies across departments. Production and Software Engineering show relatively higher percentages of voluntary terminations, while IT/IS and Admin Offices have somewhat larger shares of employees terminated for cause. The Executive Office consists entirely of active employees, though this result should be interpreted cautiously due to the very small number of employees in that department.
+
+These differences suggest that employment status is associated with department and that workforce retention patterns are not uniform across the organization. As a result, department may be a useful predictor when modeling employee turnover and retention outcomes, and targeted retention strategies may be more effective than organization-wide approaches.
+
+# Effective Visual Storytelling: From Insights to Action
+
+**Opening paragraph**: The visual analyses conducted throughout this report revealed several important patterns related to employee demographics, compensation, engagement, satisfaction, attendance, and turnover. By examining distributions, relationships, and group differences, we identified factors that may influence workforce outcomes and organizational performance. In this concluding section, these findings are translated into practical business recommendations and opportunities for future analysis.
+
+## How to Use Visual Insights to Support Business Decisions
+
+The visual evidence we have gathered directly informs several high-priority business decisions:
+
+**Decision on Employee Retention Strategy**: The employment status analysis revealed noticeable differences in turnover patterns across departments. Production and Software Engineering exhibited relatively higher levels of voluntary termination, suggesting these departments may face greater retention challenges. Recommendation: HR should prioritize retention initiatives in these areas through employee engagement programs, career development opportunities, and periodic stay interviews to better understand the factors driving turnover.
+
+**Decision on Compensation Management**: The salary distribution analysis showed substantial variation across departments, with Software Engineering and IT/IS generally earning higher salaries and several departments containing high-salary outliers. Recommendation: Management should periodically review compensation structures to ensure internal equity and market competitiveness while investigating extreme salary values to confirm they align with organizational roles and responsibilities.
+
+**Decision on Employee Performance and Engagement**: The correlation analysis indicated a moderate positive relationship between employee engagement and job satisfaction, while employees with more days late tended to report lower engagement and satisfaction levels. Recommendation: Managers should monitor attendance patterns as potential early indicators of disengagement and implement targeted interventions to improve employee morale and workplace satisfaction before turnover risks increase.
+
+## How to Use Visual Findings to Inform Subsequent Data Analysis and Modeling
+
+The exploratory visualizations provide a strong foundation for future statistical analysis and predictive modeling. Several patterns identified during the EDA suggest variables that may be valuable predictors of employee outcomes and areas that warrant additional investigation.
+
+**Feature Selection**: Department, salary, engagement survey scores, employee satisfaction, absences, and days late emerged as potentially informative variables and should be considered as candidate predictors in future models.
+
+**Model Development**: Because employment status varies across departments, turnover-related outcomes may be modeled using classification techniques such as logistic regression, decision trees, or random forests to identify employees at greater risk of separation.
+
+**Data Quality and Outlier Assessment**: The salary analysis revealed several high-value observations, particularly within technical and leadership roles. These cases should be examined before modeling to determine whether they represent valid business variation or influential outliers.
+
+**Further Statistical Testing**: The visual patterns observed throughout the analysis suggest opportunities for formal hypothesis testing. For example, a Chi-square test of independence could assess the relationship between department and employment status, while ANOVA or nonparametric alternatives could evaluate differences in salary distributions across departments.
+
+## Dashboard and Real-Time Monitoring Implementation
+
+If implemented as a dashboard, the visualizations from this analysis could be organized into three sections designed to support HR decision-making and workforce planning.
+
+**Tab 1**: “Workforce Overview” — Display key workforce metrics including employee counts, department composition, employment status distributions, and demographic summaries. This section would provide HR leaders with a high-level view of organizational health and workforce composition.
+
+**Tab 2**: “Employee Engagement and Performance” — Feature interactive visualizations of employee satisfaction, engagement survey scores, absences, and lateness metrics. Users could filter by department, employment status, or performance level to identify patterns associated with employee engagement and retention risk.
+
+**Tab 3**: “Retention and Compensation Insights” — Present salary distributions, turnover patterns, and department-level employment status comparisons. These visualizations would help management monitor retention trends, identify departments with elevated turnover, and evaluate compensation patterns across the organization.
+
+The dashboard could be updated regularly to monitor workforce trends and key employee metrics.
+
+This concludes the data storytelling project. The analysis demonstrates how data visualization can convert employee data into actionable insights that support effective human resource management and organizational decision-making.
+
